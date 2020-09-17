@@ -1,0 +1,34 @@
+version: "3.5"
+services:
+  api:
+    image: waifupics/api
+    restart: always
+    volumes:
+      - waifu_config:/app/config
+    expose:
+      - 8081
+  client:
+    image: waifupics/client
+    restart: always
+    expose:
+      - 8082
+  nginx:
+    image: nginx:alpine
+    restart: always
+    volumes:
+      - nginx_config:/etc/nginx/conf.d
+      - nginx_cert:/cert
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on: 
+      - api
+      - client
+      
+volumes:
+  waifu_config:
+    name: waifu_config
+  nginx_config:
+    name: nginx_config
+  nginx_cert:
+    name: nginx_cert
